@@ -110,8 +110,8 @@ static int hap_fw_upgrade_write(hap_write_data_t write_data[], int count,
                 }
                 esp_http_client_config_t *client_config = (esp_http_client_config_t *)serv_priv;
                 client_config->url = strndup(write->val.s, strlen(write->val.s)+1);
-                if (xTaskCreatePinnedToCore(fw_upgrade_thread_entry, FW_UPG_TASK_NAME, FW_UPG_STACKSIZE,
-                    client_config, FW_UPG_TASK_PRIORITY, NULL, 0) == pdTRUE) {
+                if (xTaskCreate(fw_upgrade_thread_entry, FW_UPG_TASK_NAME, FW_UPG_STACKSIZE,
+                    client_config, FW_UPG_TASK_PRIORITY, NULL) == pdTRUE) {
                     *(write->status) = HAP_STATUS_SUCCESS;
                 } else {
                     *(write->status) = HAP_STATUS_OO_RES;

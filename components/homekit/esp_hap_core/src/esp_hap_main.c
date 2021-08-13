@@ -181,8 +181,8 @@ int hap_loop_start()
 {
     if (!loop_started) {
         loop_started = true;
-        xTaskCreatePinnedToCore(hap_loop_task, "hap-loop", hap_priv.cfg.task_stack_size, NULL,
-                                hap_priv.cfg.task_priority, NULL, 0);
+        xTaskCreate(hap_loop_task, "hap-loop", hap_priv.cfg.task_stack_size, NULL,
+                                hap_priv.cfg.task_priority, NULL);
     }
     return HAP_SUCCESS;
 }
