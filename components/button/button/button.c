@@ -325,17 +325,17 @@ esp_err_t iot_button_set_evt_cb(button_handle_t btn_handle, button_cb_type_t typ
     return ESP_OK;
 }
 
-esp_err_t iot_button_add_on_press_cb(button_handle_t btn_handle, uint32_t press_sec, button_cb cb, void* arg)
+esp_err_t iot_button_add_on_press_cb(button_handle_t btn_handle, uint32_t press_msec, button_cb cb, void* arg)
 {
     POINT_ASSERT(TAG, btn_handle, ESP_ERR_INVALID_ARG);
-    IOT_CHECK(TAG, press_sec != 0, ESP_ERR_INVALID_ARG);
+    IOT_CHECK(TAG, press_msec != 0, ESP_ERR_INVALID_ARG);
     button_dev_t* btn = (button_dev_t*) btn_handle;
     button_cb_t* cb_new = (button_cb_t*) calloc(1, sizeof(button_cb_t));
     POINT_ASSERT(TAG, cb_new, ESP_FAIL);
     cb_new->on_press = 1;
     cb_new->arg = arg;
     cb_new->cb = cb;
-    cb_new->interval = press_sec * 1000 / portTICK_PERIOD_MS;
+    cb_new->interval = press_msec / portTICK_PERIOD_MS;
     cb_new->pbtn = btn;
     cb_new->tmr = xTimerCreate("btn_press_tmr", cb_new->interval, pdFALSE, cb_new, button_press_cb);
     cb_new->next_cb = btn->cb_head;
@@ -343,17 +343,17 @@ esp_err_t iot_button_add_on_press_cb(button_handle_t btn_handle, uint32_t press_
     return ESP_OK;
 }
 
-esp_err_t iot_button_add_on_release_cb(button_handle_t btn_handle, uint32_t press_sec, button_cb cb, void* arg)
+esp_err_t iot_button_add_on_release_cb(button_handle_t btn_handle, uint32_t press_msec, button_cb cb, void* arg)
 {
     POINT_ASSERT(TAG, btn_handle, ESP_ERR_INVALID_ARG);
-    IOT_CHECK(TAG, press_sec != 0, ESP_ERR_INVALID_ARG);
+    IOT_CHECK(TAG, press_msec != 0, ESP_ERR_INVALID_ARG);
     button_dev_t* btn = (button_dev_t*) btn_handle;
     button_cb_t* cb_new = (button_cb_t*) calloc(1, sizeof(button_cb_t));
     POINT_ASSERT(TAG, cb_new, ESP_FAIL);
     btn->taskq_on = 1;
     cb_new->arg = arg;
     cb_new->cb = cb;
-    cb_new->interval = press_sec * 1000 / portTICK_PERIOD_MS;
+    cb_new->interval = press_msec / portTICK_PERIOD_MS;
     cb_new->pbtn = btn;
     cb_new->tmr = xTimerCreate("btn_press_tmr", cb_new->interval, pdFALSE, cb_new, button_press_cb);
     cb_new->next_cb = btn->cb_head;
